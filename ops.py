@@ -119,5 +119,11 @@ import math
 for m in meridians:
     m["probability"] = math.prod([t["trait_count"]/1000 for t in m["traits"]]) * 1000
 for m in sorted(meridians, key=lambda x: x["probability"], reverse=True):
-    print(f"{m['name']:>14s}: {m['probability']:1.5f}")
+    if m["sell_orders"] is None:
+        price = "-"
+    else:
+        so = m["sell_orders"][0]
+        price = float(so["current_price"]) / 10 ** int(so["payment_token_contract"]["decimals"])
+    print(f"{m['name']:>14s}: {m['probability']:1.5f} {str(price):>6s} {m['permalink']}")
+
 # %%
