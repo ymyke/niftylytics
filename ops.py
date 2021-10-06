@@ -83,16 +83,18 @@ querystring = {
 x = requests.request("GET", opensea_url, params=querystring)
 x
 
-#%% Let's try to only get the Meridian ids:
+#
+# %% Let's get all the Meridians at once:
+import requests
+
 meridian_ids = list(range(163000000, 163001000))
 
-#%%
+
 def chunks(lst, n):
     """Yield successive n-sized chunks from lst."""
     for i in range(0, len(lst), n):
-        yield lst[i:i + n]
+        yield lst[i : i + n]
 
-#%%
 
 def get_meridians():
     querystring = {
@@ -101,15 +103,16 @@ def get_meridians():
         "asset_contract_address": "0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270",
     }
     assets = []
-    for token_ids in chunks(meridian_ids, 20):
+    for token_ids in chunks(meridian_ids, 25):
+        print("Getting more assets...")
         querystring["token_ids"] = token_ids
         response = requests.request("GET", opensea_url, params=querystring)
         response.raise_for_status()
         assets.extend(response.json()["assets"])
-
+    print("All assets retrieved.")
     return assets
+
 
 x = get_meridians()
 
-
-#%% Play around with listing_date:
+# %%
