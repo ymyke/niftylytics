@@ -99,20 +99,19 @@ def chunks(lst, n):
 def get_meridians():
     querystring = {
         "order_direction": "desc",
-        # "token_ids": meridian_ids[0:3],
         "asset_contract_address": "0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270",
     }
     assets = []
-    for token_ids in chunks(meridian_ids, 25):
+    for token_ids in chunks(meridian_ids, 20):
         print("Getting more assets...")
         querystring["token_ids"] = token_ids
         response = requests.request("GET", opensea_url, params=querystring)
         response.raise_for_status()
         assets.extend(response.json()["assets"])
-    print("All assets retrieved.")
+    print(f"All {len(assets)} assets retrieved.")
     return assets
 
 
-x = get_meridians()
+meridians = get_meridians()
 
 # %%
