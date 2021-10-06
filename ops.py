@@ -123,18 +123,60 @@ for m in meridians:
     else:
         so = m["sell_orders"][0]
         m["price"] = float(so["current_price"]) / 10 ** int(so["payment_token_contract"]["decimals"])
+    if m["last_sale"] is None:
+        m["last_price"] = "-"
+    else:
+        ls = m["last_sale"]
+        m["last_price"] = float(ls["total_price"]) / 10 ** int(ls["payment_token"]["decimals"])
+
+def print_asset(a, i="", extended=False):
+    if i != "":
+        i = str(f"{i:4d}")
+    print(f"{i}{a['name']:>14s}: {a['probability']:1.5f} {str(a['price']):>6s} {str(a['last_price'])} {a['permalink']}")
+    if extended:
+        print("   ", ", ".join(f'{t["value"]} ({float(t["trait_count"])/1000})' for t in a["traits"] if t["value"] != "All Meridians"))
+
 
 #%% Show all sorted by probability:
 i=1000
 for m in sorted(meridians, key=lambda x: x["probability"], reverse=True):
-    print(f"{i:4d} {m['name']:>14s}: {m['probability']:1.5f} {str(m['price']):>6s} {m['permalink']}")
+    print_asset(m, extended=True)
     i -= 1
 
 # %% Show only the ones that have a price, sorted by price:
 for m in sorted(meridians, key=lambda x: float(x["price"]) if x["price"] != "-" else float("inf"), reverse=True):
     if m["price"] != "-":
-        print(f"{m['name']:>14s}: {m['probability']:1.5f} {str(m['price']):>6s} {m['permalink']}")
-
+        print_asset(m, extended=True)
 
 # FIXME: Also check the past transactions
+# %%
+
+# %% Dive deeper into certain candidates:
+candidate_meridian_ids = ["#589", "#386", "#666", "#799", "#316", "#338", "#609", "#357", "#635", "#834"]
+candidates = [m for m in meridians for mid in candidate_meridian_ids if m["name"].endswith(mid)]
+for c in sorted(candidates, key=lambda x: x["probability"]):
+    print_asset(c, extended=True)
+
+# %%
+xx = [m for m in meridians if m["name"].endswith("#386")]
+# %%
+
+traitstats = []
+for m in meridians:
+    traitstats.extend(x["value"] for x in m["traits"] if x["value"].startswith("Style"))
+from collections import Counter
+c = Counter(traitstats)
+c
+
+
+# %% How to find all meridians with a certain trait:
+def find_trait(asset, trait: str):
+    for t in asset["traits"]:
+        for k in t.keys():
+            if t[k] and trait.lower() in str(t[k]).lower():
+                return True
+    return False
+
+# %%
+[m["permalink"] for m in meridians if find_trait(m, "newsprint")]
 # %%
