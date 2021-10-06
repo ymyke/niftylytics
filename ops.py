@@ -114,16 +114,27 @@ def get_meridians():
 
 meridians = get_meridians()
 
-# %% Add probabilities and show them:
+# %% Add probabilities and prices:
 import math
 for m in meridians:
     m["probability"] = math.prod([t["trait_count"]/1000 for t in m["traits"]]) * 1000
-for m in sorted(meridians, key=lambda x: x["probability"], reverse=True):
     if m["sell_orders"] is None:
-        price = "-"
+        m["price"] = "-"
     else:
         so = m["sell_orders"][0]
-        price = float(so["current_price"]) / 10 ** int(so["payment_token_contract"]["decimals"])
-    print(f"{m['name']:>14s}: {m['probability']:1.5f} {str(price):>6s} {m['permalink']}")
+        m["price"] = float(so["current_price"]) / 10 ** int(so["payment_token_contract"]["decimals"])
 
+#%% Show all sorted by probability:
+i=1000
+for m in sorted(meridians, key=lambda x: x["probability"], reverse=True):
+    print(f"{i:4d} {m['name']:>14s}: {m['probability']:1.5f} {str(m['price']):>6s} {m['permalink']}")
+    i -= 1
+
+# %% Show only the ones that have a price, sorted by price:
+for m in sorted(meridians, key=lambda x: float(x["price"]) if x["price"] != "-" else float("inf"), reverse=True):
+    if m["price"] != "-":
+        print(f"{m['name']:>14s}: {m['probability']:1.5f} {str(m['price']):>6s} {m['permalink']}")
+
+
+# FIXME: Also check the past transactions
 # %%
