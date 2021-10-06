@@ -114,4 +114,10 @@ def get_meridians():
 
 meridians = get_meridians()
 
+# %% Add probabilities and show them:
+import math
+for m in meridians:
+    m["probability"] = math.prod([t["trait_count"]/1000 for t in m["traits"]]) * 1000
+for m in sorted(meridians, key=lambda x: x["probability"], reverse=True):
+    print(f"{m['name']:>14s}: {m['probability']:1.5f}")
 # %%
