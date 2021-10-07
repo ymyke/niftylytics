@@ -119,34 +119,54 @@ from functools import reduce
 import operator
 
 for m in meridians:
-    m["probability"] = reduce(operator.mul, [t["trait_count"]/1000 for t in m["traits"]], 1) * 1000
+    m["probability"] = (
+        reduce(operator.mul, [t["trait_count"] / 1000 for t in m["traits"]], 1) * 1000
+    )
     if m["sell_orders"] is None:
         m["price"] = "-"
     else:
         so = m["sell_orders"][0]
-        m["price"] = float(so["current_price"]) / 10 ** int(so["payment_token_contract"]["decimals"])
+        m["price"] = float(so["current_price"]) / 10 ** int(
+            so["payment_token_contract"]["decimals"]
+        )
     if m["last_sale"] is None:
         m["last_price"] = "-"
     else:
         ls = m["last_sale"]
-        m["last_price"] = float(ls["total_price"]) / 10 ** int(ls["payment_token"]["decimals"])
+        m["last_price"] = float(ls["total_price"]) / 10 ** int(
+            ls["payment_token"]["decimals"]
+        )
+
 
 def print_asset(a, i="", extended=False):
     if i != "":
         i = str(f"{i:4d}")
-    print(f"{i}{a['name']:>14s}: {a['probability']:1.5f} {str(a['price']):>6s} {str(a['last_price'])} {a['permalink']}")
+    print(
+        f"{i}{a['name']:>14s}: {a['probability']:1.5f} {str(a['price']):>6s} {str(a['last_price'])} {a['permalink']}"
+    )
     if extended:
-        print("   ", ", ".join(f'{t["value"]} ({float(t["trait_count"])/1000})' for t in a["traits"] if t["value"] != "All Meridians"))
+        print(
+            "   ",
+            ", ".join(
+                f'{t["value"]} ({float(t["trait_count"])/1000})'
+                for t in a["traits"]
+                if t["value"] != "All Meridians"
+            ),
+        )
 
 
 #%% Show all sorted by probability:
-i=1000
+i = 1000
 for m in sorted(meridians, key=lambda x: x["probability"], reverse=True):
     print_asset(m, extended=True)
     i -= 1
 
 # %% Show only the ones that have a price, sorted by price:
-for m in sorted(meridians, key=lambda x: float(x["price"]) if x["price"] != "-" else float("inf"), reverse=True):
+for m in sorted(
+    meridians,
+    key=lambda x: float(x["price"]) if x["price"] != "-" else float("inf"),
+    reverse=True,
+):
     if m["price"] != "-":
         print_asset(m, extended=True)
 
@@ -154,8 +174,23 @@ for m in sorted(meridians, key=lambda x: float(x["price"]) if x["price"] != "-" 
 # %%
 
 # %% Dive deeper into certain candidates:
-candidate_meridian_ids = ["#589", "#386", "#666", "#799", "#316", "#338", "#609", "#357", "#635", "#834"]
-candidates = [m for m in meridians for mid in candidate_meridian_ids if m["name"].endswith(mid)]
+candidate_meridian_ids = [
+    "#589",
+    "#386",
+    "#666",
+    "#799",
+    "#316",
+    "#338",
+    "#609",
+    "#357",
+    "#635",
+    "#834",
+    "#597",
+]
+candidate_meridian_ids = ["#428", "#82", "#203", "#817"]
+candidates = [
+    m for m in meridians for mid in candidate_meridian_ids if m["name"].endswith(mid)
+]
 for c in sorted(candidates, key=lambda x: x["probability"]):
     print_asset(c, extended=True)
 
@@ -167,6 +202,7 @@ traitstats = []
 for m in meridians:
     traitstats.extend(x["value"] for x in m["traits"] if x["value"].startswith("Style"))
 from collections import Counter
+
 c = Counter(traitstats)
 c
 
@@ -179,6 +215,71 @@ def find_trait(asset, trait: str):
                 return True
     return False
 
+
 # %%
 [m["permalink"] for m in meridians if find_trait(m, "newsprint")]
+# %%
+
+
+#%% Build a df:
+import pandas as pd
+
+tt = []
+for m in meridians:
+    row = [
+        m["name"].split("#")[1],
+        m["name"],
+        m["price"],
+        m["last_price"],
+    ]
+    row.extend(
+        t["value"].split(":")[1]
+        for t in sorted(m["traits"], key=lambda x: x["value"])
+        if ":" in t["value"]
+    )
+    row.append(m["permalink"])
+    tt.append(row)
+# %%
+df = pd.DataFrame(tt)
+df.columns = [
+    "id",
+    "name",
+    "price",
+    "lastprice",
+    "chromaticity",
+    "frequency",
+    "palette",
+    "structure",
+    "style",
+    "zoom",
+    "link",
+]
+df.set_index("id", inplace=True)
+# %%
+# %%
+df
+
+# %%
+import numpy as np
+
+df.replace("-", np.nan, inplace=True)
+# %%
+df.sort_values("lastprice", inplace=True, ascending=False)
+df
+# %%
+import pandas as pd
+
+pd.set_option("display.max_columns", None)
+pd.plotting.register_matplotlib_converters()
+import matplotlib.pyplot as plt
+
+plt.rcParams["figure.figsize"] = (20, 10)
+import seaborn as sns
+
+sns.boxplot(x=df["style"], y=df.lastprice, hue=df["chromaticity"])
+# %%
+df.groupby("style").nunique()
+
+# %%
+df[df.name == "Meridian #666"]
 # %%
