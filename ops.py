@@ -115,9 +115,11 @@ def get_meridians():
 meridians = get_meridians()
 
 # %% Add probabilities and prices:
-import math
+from functools import reduce
+import operator
+
 for m in meridians:
-    m["probability"] = math.prod([t["trait_count"]/1000 for t in m["traits"]]) * 1000
+    m["probability"] = reduce(operator.mul, [t["trait_count"]/1000 for t in m["traits"]], 1) * 1000
     if m["sell_orders"] is None:
         m["price"] = "-"
     else:
