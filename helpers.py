@@ -38,6 +38,10 @@ def turn_assets_into_df(assets: list) -> Union[pd.DataFrame, list]:
                 so["payment_token_contract"]["decimals"]
             )
             price_symbol = so["payment_token_contract"]["symbol"]
+            # Convert to ETH if necessary:
+            if price_symbol not in ["ETH", "WETH"]:
+                price *= float(so["payment_token_contract"]["eth_price"])
+                price_symbol = "ETH"
 
         # Get last price:
         last_price = last_price_symbol = last_sale_date = np.nan
@@ -47,6 +51,10 @@ def turn_assets_into_df(assets: list) -> Union[pd.DataFrame, list]:
                 ls["payment_token"]["decimals"]
             )
             last_price_symbol = ls["payment_token"]["symbol"]
+            # Convert to ETH if necessary:
+            if last_price_symbol not in ["ETH", "WETH"]:
+                last_price *= float(ls["payment_token"]["eth_price"])
+                last_price_symbol = "ETH"
             last_sale_date = ls["event_timestamp"]
 
         # Add everything to the table:
