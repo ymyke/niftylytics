@@ -9,7 +9,7 @@ A collection of Jupyter notebooks and supporting code to analyze individual
   * [Meridians](https://nbviewer.org/github/ymyke/abalyzer/blob/main/meridians.ipynb)
   * [Fidenzas](https://nbviewer.org/github/ymyke/abalyzer/blob/main/fidenzas.ipynb)
 * Other:
-  * [The Wanderers](https://nbviewer.org/github/ymyke/abalyzer/blob/main/wanderers.ipynb)
+  * [The Wanderers](https://nbviewer.org/github/ymyke/abalyzer/blob/main/the_wanderers.ipynb)
 
 ## How to use
 
