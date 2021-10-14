@@ -5,8 +5,11 @@ A collection of Jupyter notebooks and supporting code to analyze individual
 
 ## Table of contents
 
-* [Meridians](https://nbviewer.org/github/ymyke/abalyzer/blob/main/meridians.ipynb)
-* [Fidenzas](https://nbviewer.org/github/ymyke/abalyzer/blob/main/fidenzas.ipynb)
+* Art Blocks:
+  * [Meridians](https://nbviewer.org/github/ymyke/abalyzer/blob/main/meridians.ipynb)
+  * [Fidenzas](https://nbviewer.org/github/ymyke/abalyzer/blob/main/fidenzas.ipynb)
+* Other:
+  * [The Wanderers](https://nbviewer.org/github/ymyke/abalyzer/blob/main/wanderers.ipynb)
 
 ## How to use
 
