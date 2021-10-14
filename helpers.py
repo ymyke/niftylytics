@@ -166,7 +166,7 @@ def turn_assets_into_df_generalized(assets: list) -> Union[pd.DataFrame, list]:
         # Add everything to the table:
         _tt.append(
             [
-                a["token_id"],  # CHANGED
+                a["token_id"],
                 a[
                     "token_id"
                 ],  # FIXME Not really a nice solution // but they don't have names and I need some attribute that is not the index to expose via hover in the Plotly charts.
@@ -275,7 +275,7 @@ def turn_assets_into_df_wanderers_variant(assets: list) -> Union[pd.DataFrame, l
         # Add everything to the table:
         _tt.append(
             [
-                a["token_id"],  # CHANGED
+                a["token_id"],
                 a[
                     "token_id"
                 ],  # FIXME Not really a nice solution // but they don't have names and I need some attribute that is not the index to expose via hover in the Plotly charts.
