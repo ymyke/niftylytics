@@ -21,6 +21,47 @@ def turn_assets_into_df(assets: list) -> Union[pd.DataFrame, list]:
       value, e.g. "All Fidenzas".
     """
 
+    def get_traits(traitlist: list, get_names: bool = False) -> list:
+        """Get the trait values (or names) from the list of trait elements.
+
+        There are two ways in which Opensea encodes the traits. Here, we try to
+        identify the two cases and treat the traits accordingly.
+        """
+
+        old_style_traits = False
+        if len(set(t["trait_type"] for t in traitlist)) == 1:
+            if len(traitlist) == 1:
+                print(
+                    "WARNING: Assuming old style traits but that might be a wrong "
+                    "assumption since there is only 1 trait here."
+                )
+            old_style_traits = True
+
+        if not get_names:  # Return the actual values
+            if old_style_traits:
+                return [
+                    t["value"].split(":")[1].strip()
+                    for t in sorted(traitlist, key=lambda x: x["value"])
+                    if ":" in t["value"]  # In order to ignore the "All xxx" trait
+                ]
+            else:
+                return [
+                    t["value"]
+                    for t in sorted(a["traits"], key=lambda x: x["trait_type"])
+                ]
+        else:  # Return the trait names only
+            if old_style_traits:
+                return [
+                    t["value"].split(":")[0].strip()  # Take the first part here!
+                    for t in sorted(a["traits"], key=lambda x: x["value"])
+                    if ":" in t["value"]  # In order to ignore the "All xxx" trait
+                ]
+            else:
+                return [
+                    t["trait_type"]
+                    for t in sorted(a["traits"], key=lambda x: x["trait_type"])
+                ]
+
     _tt = []
     for a in assets:
 
@@ -68,23 +109,13 @@ def turn_assets_into_df(assets: list) -> Union[pd.DataFrame, list]:
                 last_price_symbol,
                 last_sale_date,
                 prob_score,
-                *[  # All the traits:
-                    t["value"].split(":")[1].strip()
-                    for t in sorted(a["traits"], key=lambda x: x["value"])
-                    if ":" in t["value"]  # In order to ignore the "All xxx" trait
-                ],
+                *get_traits(a["traits"]),
                 a["permalink"],
             ]
         )
 
-    # Get the traits names:
-    traits = [  # All the traits:
-        t["value"].split(":")[0].strip()  # Take the first part here!
-        for t in sorted(a["traits"], key=lambda x: x["value"])
-        if ":" in t["value"]  # In order to ignore the "All xxx" trait
-    ]
-
     # Turn table into df:
+    traits = get_traits(a["traits"], get_names=True)
     df = pd.DataFrame(_tt)
     df.columns = [
         "ID",
