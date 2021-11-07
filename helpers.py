@@ -24,8 +24,9 @@ def turn_assets_into_df(assets: list) -> Union[pd.DataFrame, list]:
     def get_traits(traitlist: list, get_names: bool = False) -> list:
         """Get the trait values (or names) from the list of trait elements.
 
-        There are two ways in which Opensea encodes the traits. Here, we try to
-        identify the two cases and treat the traits accordingly.
+        There are two ways in which Opensea encodes the traits (sometimes both are used
+        in the same Art Blocks collection). Here, we try to identify the two cases and
+        treat the traits accordingly.
         """
 
         old_style_traits = False
