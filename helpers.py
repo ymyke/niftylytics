@@ -211,6 +211,8 @@ def turn_assets_into_df_generalized(assets: list) -> Union[pd.DataFrame, list]:
 def turn_assets_into_df_wanderers_variant(assets: list) -> Union[pd.DataFrame, list]:
     """This function specifically for The Wanderers collection; derived from the
     generalized variant above.
+
+    The main difference is that it sums up certain traits such as stars, galaxies, etc.
     """
 
     trait_blueprint = {
