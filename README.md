@@ -12,6 +12,7 @@ on the traits of the NFTs and their relationship to their price.
   * [Rorschachs](https://nbviewer.org/github/ymyke/niftylytics/blob/main/rorschachs.ipynb)
   * [Ringers](https://nbviewer.org/github/ymyke/niftylytics/blob/main/ringers.ipynb)
   * [Parade](https://nbviewer.org/github/ymyke/niftylytics/blob/main/parade.ipynb)
+  * [Edifice](https://nbviewer.org/github/ymyke/niftylytics/blob/main/edifice.ipynb)
 * Other collections:
   * [The Wanderers](https://nbviewer.org/github/ymyke/niftylytics/blob/main/the_wanderers.ipynb)
 
