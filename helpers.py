@@ -102,7 +102,8 @@ def turn_assets_into_df(assets: list) -> Union[pd.DataFrame, list]:
         # Add everything to the table:
         _tt.append(
             [
-                a["name"].split("#")[1],
+                # a["name"].split("#")[1],
+                a["name"],
                 a["name"],
                 price,
                 price_symbol,
